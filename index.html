@@ -1128,61 +1128,42 @@
       }
 
       // ── CARGAR ──
-      function loadData() {
-        const raw = localStorage.getItem(STORAGE_KEY);
-        if (!raw) return;
-        let data;
-        try {
-          data = JSON.parse(raw);
-        } catch {
-          return;
-        }
+function loadData() {
+  const raw = localStorage.getItem(STORAGE_KEY);
+  if (!raw) return;
+  let data;
+  try { data = JSON.parse(raw); } catch { return; }
 
-        data.forEach((row, idx) => {
-          const tr = document.querySelectorAll("#tableBody tr")[idx];
-          if (!tr) return;
-          const sels = tr.querySelectorAll("select");
-          const inp = tr.querySelector('input[type="text"]');
+  data.forEach((row) => {
+    // Buscar la fila exacta por el número de ola en lugar de la posición
+    const tr = document.querySelector(`#tableBody tr[data-ola="${row.ola}"]`);
+    if (!tr) return;
+    const sels = tr.querySelectorAll("select");
+    const inp = tr.querySelector('input[type="text"]');
 
-          const setVal = (sel, val) => {
-            if (sel) {
-              sel.value = val;
-            }
-          };
+    const setVal = (sel, val) => { if (sel) sel.value = val; };
 
-          setVal(sels[0], row.j1);
-          colorJefe(sels[0]);
-          setVal(sels[1], row.j2);
-          colorJefe(sels[1]);
-          setVal(sels[2], row.j3);
-          colorJefe(sels[2]);
-          setVal(sels[3], row.u1);
-          colorUbicacion(sels[3]);
-          setVal(sels[4], row.u2);
-          colorUbicacion(sels[4]);
-          setVal(sels[5], row.u3);
-          colorUbicacion(sels[5]);
-          if (inp) inp.value = row.rango || "";
-          setVal(sels[6], row.vn);
-          styleNumSel(sels[6], "verde");
-          setVal(sels[7], row.vd);
-          styleDiffSel(sels[7], "verde");
-          setVal(sels[8], row.nn);
-          styleNumSel(sels[8], "naranja");
-          setVal(sels[9], row.nd);
-          styleDiffSel(sels[9], "naranja");
-          setVal(sels[10], row.mn);
-          styleNumSel(sels[10], "morada");
-          setVal(sels[11], row.md);
-          styleDiffSel(sels[11], "morada");
-        });
-      }
+    setVal(sels[0], row.j1); colorJefe(sels[0]);
+    setVal(sels[1], row.j2); colorJefe(sels[1]);
+    setVal(sels[2], row.j3); colorJefe(sels[2]);
+    setVal(sels[3], row.u1); colorUbicacion(sels[3]);
+    setVal(sels[4], row.u2); colorUbicacion(sels[4]);
+    setVal(sels[5], row.u3); colorUbicacion(sels[5]);
+    if (inp) inp.value = row.rango || "";
+    setVal(sels[6], row.vn); styleNumSel(sels[6], "verde");
+    setVal(sels[7], row.vd); styleDiffSel(sels[7], "verde");
+    setVal(sels[8], row.nn); styleNumSel(sels[8], "naranja");
+    setVal(sels[9], row.nd); styleDiffSel(sels[9], "naranja");
+    setVal(sels[10], row.mn); styleNumSel(sels[10], "morada");
+    setVal(sels[11], row.md); styleDiffSel(sels[11], "morada");
+  });
+}
 
       // ── INIT ──
       function init() {
         buildYears();
         const tbody = document.getElementById("tableBody");
-        for (let i = 1; i <= 20; i++) {
+        for (let i = 5; i <= 17; i++) {
           tbody.appendChild(buildRow(i));
         }
         loadData();
