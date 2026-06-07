@@ -1,0 +1,1286 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Reactor Armene — Pirate Galaxy</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg-deep: #04060f;
+        --bg-panel: #090d1a;
+        --bg-row: #0d1225;
+        --bg-row-alt: #0a0f1e;
+        --accent-gold: #f0a830;
+        --accent-cyan: #00d4ff;
+        --verde: #2ecc71;
+        --naranja: #e67e22;
+        --morada: #9b59b6;
+        --text-main: #c8d8f0;
+        --text-dim: #6a7a9a;
+        --border: #1e2a45;
+        --header-bg: #060a17;
+        --pair1: #00bfff;
+        --pair2: #c084fc;
+        --pair3: #fb923c;
+        --pair4: #34d399;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        background: var(--bg-deep);
+        color: var(--text-main);
+        font-family: "Exo 2", sans-serif;
+        min-height: 100vh;
+        padding: 24px 16px 48px;
+        background-image: radial-gradient(
+            ellipse at 20% 10%,
+            rgba(0, 80, 180, 0.08) 0%,
+            transparent 60%
+          ),
+          radial-gradient(
+            ellipse at 80% 90%,
+            rgba(120, 40, 200, 0.07) 0%,
+            transparent 55%
+          ),
+          url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+      }
+
+      /* ── HEADER ── */
+      .header {
+        text-align: center;
+        margin-bottom: 32px;
+        position: relative;
+      }
+      .header::before {
+        content: "";
+        display: block;
+        width: 80px;
+        height: 2px;
+        background: linear-gradient(90deg, transparent, var(--accent-gold));
+        margin: 0 auto 16px;
+      }
+      .header::after {
+        content: "";
+        display: block;
+        width: 80px;
+        height: 2px;
+        background: linear-gradient(90deg, var(--accent-gold), transparent);
+        margin: 16px auto 0;
+      }
+      .skull-icon {
+        font-size: 2rem;
+        margin-bottom: 4px;
+        opacity: 0.8;
+      }
+      .header h1 {
+        font-family: "Orbitron", monospace;
+        font-size: clamp(1.4rem, 4vw, 2.4rem);
+        font-weight: 900;
+        letter-spacing: 0.15em;
+        color: var(--accent-gold);
+        text-shadow: var(--glow-gold);
+        text-transform: uppercase;
+      }
+      .header h2 {
+        font-family: "Orbitron", monospace;
+        font-size: clamp(0.7rem, 2vw, 1rem);
+        font-weight: 400;
+        color: var(--accent-cyan);
+        letter-spacing: 0.3em;
+        margin-top: 4px;
+        text-shadow: var(--glow-cyan);
+      }
+      .header p {
+        font-size: 0.8rem;
+        color: var(--text-dim);
+        margin-top: 8px;
+        letter-spacing: 0.1em;
+      }
+
+      /* ── LEGEND ── */
+      .legend {
+        display: flex;
+        gap: 20px;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-bottom: 20px;
+      }
+      .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 0.75rem;
+        font-family: "Orbitron", monospace;
+        letter-spacing: 0.08em;
+      }
+      .legend-dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        display: inline-block;
+      }
+      .dot-verde {
+        background: var(--verde);
+        box-shadow: 0 0 6px var(--verde);
+      }
+      .dot-naranja {
+        background: var(--naranja);
+        box-shadow: 0 0 6px var(--naranja);
+      }
+      .dot-morada {
+        background: var(--morada);
+        box-shadow: 0 0 6px var(--morada);
+      }
+
+      /* ── WRAPPER ── */
+      .table-wrapper {
+        overflow-x: auto;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        box-shadow: 0 0 30px rgba(0, 0, 0, 0.6),
+          0 0 1px var(--accent-gold) inset;
+        background: var(--bg-panel);
+      }
+
+      table {
+        width: 100%;
+        min-width: 1300px;
+        border-collapse: collapse;
+      }
+
+      /* ── HEADER ROW ── */
+      thead tr:first-child th {
+        background: #05070e;
+        font-family: "Orbitron", monospace;
+        font-size: 0.6rem;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        padding: 12px 8px 6px;
+        border-bottom: 1px solid var(--border);
+        color: var(--text-dim);
+        position: sticky;
+        top: 0;
+        z-index: 10;
+      }
+      thead tr:first-child th.col-ola {
+        color: var(--accent-gold);
+      }
+      thead tr:first-child th.col-verde {
+        color: var(--verde);
+        border-top: 2px solid var(--verde);
+      }
+      thead tr:first-child th.col-naranja {
+        color: var(--naranja);
+        border-top: 2px solid var(--naranja);
+      }
+      thead tr:first-child th.col-morada {
+        color: var(--morada);
+        border-top: 2px solid var(--morada);
+      }
+
+      /* ── PAIR COLUMN COLORS ── */
+      thead tr:last-child th.pair1 {
+        color: var(--pair1);
+        border-bottom: 2px solid var(--pair1);
+      }
+      thead tr:last-child th.pair2 {
+        color: var(--pair2);
+        border-bottom: 2px solid var(--pair2);
+      }
+      thead tr:last-child th.pair3 {
+        color: var(--pair3);
+        border-bottom: 2px solid var(--pair3);
+      }
+      thead tr:last-child th.pair4 {
+        color: var(--pair4);
+        border-bottom: 2px solid var(--pair4);
+      }
+
+      /* Pair left-border accent on body cells */
+      tbody td.pair1 {
+        border-left: 2px solid rgba(0, 191, 255, 0.25);
+      }
+      tbody td.pair2 {
+        border-left: 2px solid rgba(192, 132, 252, 0.25);
+      }
+      tbody td.pair3 {
+        border-left: 2px solid rgba(251, 146, 60, 0.25);
+      }
+      tbody td.pair4 {
+        border-left: 2px solid rgba(52, 211, 153, 0.25);
+      }
+
+      /* ── JEFE SELECT COLORS ── */
+      select.jefe-recolectora {
+        color: #ffffff !important;
+        border-color: rgba(255, 255, 255, 0.4) !important;
+      }
+      select.jefe-centinela {
+        color: #ff6b35 !important;
+        border-color: rgba(255, 107, 53, 0.5) !important;
+      }
+      select.jefe-dispersor {
+        color: #c084fc !important;
+        border-color: rgba(192, 132, 252, 0.5) !important;
+      }
+      select.jefe-na {
+        color: var(--text-dim) !important;
+      }
+
+      /* section header for "Dificultad" */
+      .th-section {
+        background: #05070e !important;
+        text-align: right;
+        color: var(--text-dim) !important;
+        font-size: 0.55rem !important;
+        letter-spacing: 0.18em !important;
+        padding-bottom: 2px !important;
+        border-bottom: none !important;
+      }
+
+      /* ── BODY ROWS ── */
+      tbody tr {
+        border-bottom: 1px solid rgba(30, 42, 69, 0.5);
+        transition: background 0.15s;
+      }
+      tbody tr:nth-child(odd) {
+        background: var(--bg-row);
+      }
+      tbody tr:nth-child(even) {
+        background: var(--bg-row-alt);
+      }
+      tbody tr:hover {
+        background: #121b35;
+      }
+
+      tbody td {
+        padding: 6px 8px;
+        font-size: 0.8rem;
+        vertical-align: middle;
+        border-right: 1px solid rgba(30, 42, 69, 0.3);
+      }
+      tbody td:last-child {
+        border-right: none;
+      }
+
+      /* OLA column */
+      .td-ola {
+        font-family: "Orbitron", monospace;
+        font-weight: 700;
+        font-size: 0.85rem;
+        color: var(--accent-gold);
+        text-align: center;
+        min-width: 40px;
+        text-shadow: 0 0 6px rgba(240, 168, 48, 0.5);
+      }
+
+      /* ── SELECTS & INPUTS ── */
+      select,
+      input[type="text"],
+      input[type="number"] {
+        background: rgba(10, 15, 35, 0.8);
+        border: 1px solid var(--border);
+        border-radius: 4px;
+        color: var(--text-main);
+        font-family: "Exo 2", sans-serif;
+        font-size: 0.75rem;
+        padding: 4px 6px;
+        width: 100%;
+        outline: none;
+        transition: border-color 0.2s, box-shadow 0.2s;
+        appearance: none;
+        cursor: pointer;
+      }
+      select:focus,
+      input:focus {
+        border-color: var(--accent-cyan);
+        box-shadow: 0 0 6px rgba(0, 212, 255, 0.25);
+      }
+      select option {
+        background: #0d1225;
+      }
+
+      /* Rango bichos input */
+      .td-rango input {
+        text-align: center;
+        min-width: 80px;
+        color: var(--accent-cyan);
+        font-family: "Orbitron", monospace;
+        font-weight: 600;
+        letter-spacing: 0.05em;
+      }
+
+      /* Difficulty checkboxes */
+      .diff-cell {
+        text-align: center;
+        min-width: 70px;
+      }
+      .diff-cell select {
+        min-width: 64px;
+        text-align: center;
+      }
+
+      /* color coding difficulty selects */
+      select.dif-verde {
+        border-color: var(--verde);
+        color: var(--verde);
+      }
+      select.dif-naranja {
+        border-color: var(--naranja);
+        color: var(--naranja);
+      }
+      select.dif-morada {
+        border-color: var(--morada);
+        color: var(--morada);
+      }
+
+      /* N/A badge */
+      .na-badge {
+        display: inline-block;
+        background: rgba(106, 122, 154, 0.15);
+        border: 1px solid rgba(106, 122, 154, 0.3);
+        border-radius: 3px;
+        font-size: 0.65rem;
+        padding: 1px 5px;
+        color: var(--text-dim);
+        letter-spacing: 0.05em;
+      }
+
+      /* ── NOTES ROW ── */
+      .notes-row td {
+        padding: 3px 8px;
+      }
+      .notes-row input[type="text"] {
+        font-size: 0.7rem;
+        color: var(--text-dim);
+        font-style: italic;
+        border-style: dashed;
+      }
+
+      /* ── FOOTER ── */
+      .footer {
+        text-align: center;
+        margin-top: 24px;
+        color: var(--text-dim);
+        font-size: 0.7rem;
+        letter-spacing: 0.12em;
+        font-family: "Orbitron", monospace;
+      }
+      .footer span {
+        color: var(--accent-gold);
+      }
+
+      /* ── RESET BTN ── */
+      .btn-bar {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        margin-bottom: 10px;
+      }
+      .btn {
+        background: transparent;
+        border: 1px solid var(--border);
+        color: var(--text-dim);
+        font-family: "Orbitron", monospace;
+        font-size: 0.65rem;
+        letter-spacing: 0.1em;
+        padding: 6px 14px;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+      .btn:hover {
+        border-color: var(--accent-cyan);
+        color: var(--accent-cyan);
+        box-shadow: var(--glow-cyan);
+      }
+      .btn-danger:hover {
+        border-color: #e74c3c;
+        color: #e74c3c;
+        box-shadow: 0 0 8px rgba(231, 76, 60, 0.3);
+      }
+
+      /* Stars bg decoration */
+      .stars {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 0;
+        background-image: radial-gradient(
+            1px 1px at 10% 20%,
+            rgba(200, 216, 240, 0.4) 0%,
+            transparent 100%
+          ),
+          radial-gradient(
+            1px 1px at 30% 60%,
+            rgba(200, 216, 240, 0.3) 0%,
+            transparent 100%
+          ),
+          radial-gradient(
+            1px 1px at 60% 15%,
+            rgba(200, 216, 240, 0.5) 0%,
+            transparent 100%
+          ),
+          radial-gradient(
+            1px 1px at 80% 45%,
+            rgba(200, 216, 240, 0.3) 0%,
+            transparent 100%
+          ),
+          radial-gradient(
+            1px 1px at 50% 80%,
+            rgba(200, 216, 240, 0.4) 0%,
+            transparent 100%
+          ),
+          radial-gradient(
+            1px 1px at 90% 10%,
+            rgba(200, 216, 240, 0.5) 0%,
+            transparent 100%
+          ),
+          radial-gradient(
+            1px 1px at 15% 85%,
+            rgba(200, 216, 240, 0.3) 0%,
+            transparent 100%
+          ),
+          radial-gradient(
+            1px 1px at 70% 70%,
+            rgba(200, 216, 240, 0.4) 0%,
+            transparent 100%
+          ),
+          radial-gradient(
+            1px 1px at 40% 40%,
+            rgba(200, 216, 240, 0.2) 0%,
+            transparent 100%
+          ),
+          radial-gradient(
+            1px 1px at 95% 55%,
+            rgba(200, 216, 240, 0.5) 0%,
+            transparent 100%
+          );
+      }
+      .content {
+        position: relative;
+        z-index: 1;
+        max-width: 1500px;
+        margin: 0 auto;
+      }
+
+      /* ── PLAYER CARD ── */
+      .player-card {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px 28px;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(
+          135deg,
+          rgba(9, 13, 26, 0.95),
+          rgba(5, 7, 14, 0.98)
+        );
+        border: 1px solid rgba(240, 168, 48, 0.25);
+        border-radius: 8px;
+        padding: 12px 24px;
+        margin-bottom: 24px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.4),
+          inset 0 0 40px rgba(240, 168, 48, 0.03);
+        position: relative;
+        overflow: hidden;
+      }
+      .player-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          var(--accent-gold),
+          transparent
+        );
+        opacity: 0.5;
+      }
+      .player-stat {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+      }
+      .player-stat-label {
+        font-family: "Orbitron", monospace;
+        font-size: 0.55rem;
+        letter-spacing: 0.18em;
+        color: var(--text-dim);
+        text-transform: uppercase;
+      }
+      .player-stat-value {
+        font-family: "Orbitron", monospace;
+        font-size: 0.8rem;
+        font-weight: 700;
+        color: var(--accent-gold);
+        text-shadow: 0 0 8px rgba(240, 168, 48, 0.4);
+      }
+      .player-stat-value.cyan {
+        color: var(--accent-cyan);
+        text-shadow: 0 0 8px rgba(0, 212, 255, 0.3);
+      }
+      .player-stat-value.verde {
+        color: var(--verde);
+        text-shadow: 0 0 8px rgba(46, 204, 113, 0.3);
+      }
+      .stat-sep {
+        color: rgba(240, 168, 48, 0.2);
+        font-size: 1.1rem;
+        user-select: none;
+      }
+
+      /* ── SAVE INDICATOR ── */
+      #saveIndicator {
+        position: fixed;
+        bottom: 24px;
+        right: 24px;
+        background: rgba(9, 13, 26, 0.95);
+        border: 1px solid var(--verde);
+        border-radius: 6px;
+        padding: 8px 16px;
+        font-family: "Orbitron", monospace;
+        font-size: 0.65rem;
+        letter-spacing: 0.15em;
+        color: var(--verde);
+        box-shadow: 0 0 12px rgba(46, 204, 113, 0.25);
+        opacity: 0;
+        transform: translateY(8px);
+        transition: opacity 0.3s, transform 0.3s;
+        pointer-events: none;
+        z-index: 999;
+      }
+      #saveIndicator.visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      /* ── DATE SECTION ── */
+      .date-section {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 12px 20px;
+        background: linear-gradient(
+          135deg,
+          rgba(9, 13, 26, 0.98),
+          rgba(5, 7, 14, 0.99)
+        );
+        border: 1px solid rgba(0, 212, 255, 0.2);
+        border-radius: 8px;
+        padding: 14px 28px;
+        margin-bottom: 20px;
+        position: relative;
+        overflow: hidden;
+      }
+      .date-section::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          var(--accent-cyan),
+          transparent
+        );
+        opacity: 0.4;
+      }
+      .date-label {
+        font-family: "Orbitron", monospace;
+        font-size: 0.6rem;
+        letter-spacing: 0.2em;
+        color: var(--accent-cyan);
+        text-transform: uppercase;
+        text-shadow: var(--glow-cyan);
+        white-space: nowrap;
+      }
+      .date-selects {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+      .date-field {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+        align-items: center;
+      }
+      .date-field-label {
+        font-family: "Orbitron", monospace;
+        font-size: 0.48rem;
+        letter-spacing: 0.15em;
+        color: var(--text-dim);
+        text-transform: uppercase;
+      }
+      .date-field select {
+        background: rgba(0, 20, 50, 0.7);
+        border: 1px solid rgba(0, 212, 255, 0.25);
+        border-radius: 5px;
+        color: var(--accent-cyan);
+        font-family: "Orbitron", monospace;
+        font-size: 0.72rem;
+        font-weight: 600;
+        padding: 5px 10px;
+        outline: none;
+        cursor: pointer;
+        transition: border-color 0.2s, box-shadow 0.2s;
+        appearance: none;
+        text-align: center;
+        min-width: 110px;
+      }
+      .date-field select:focus {
+        border-color: var(--accent-cyan);
+        box-shadow: 0 0 8px rgba(0, 212, 255, 0.3);
+      }
+      .date-field select option {
+        background: #060d1e;
+      }
+      .date-sep {
+        color: rgba(0, 212, 255, 0.3);
+        font-size: 1.2rem;
+        font-family: "Orbitron", monospace;
+        margin-top: 14px;
+        user-select: none;
+      }
+      .date-display {
+        font-family: "Orbitron", monospace;
+        font-size: 0.7rem;
+        font-weight: 700;
+        color: var(--accent-gold);
+        text-shadow: var(--glow-gold);
+        letter-spacing: 0.1em;
+        white-space: nowrap;
+        padding: 5px 14px;
+        border: 1px solid rgba(240, 168, 48, 0.2);
+        border-radius: 5px;
+        background: rgba(240, 168, 48, 0.05);
+        min-width: 180px;
+        text-align: center;
+        margin-top: 14px;
+      }
+
+      /* Highlight INICIO special value */
+      .special-inicio {
+        color: var(--accent-gold);
+        font-family: "Orbitron", monospace;
+        font-size: 0.7rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="stars"></div>
+    <div class="content">
+      <!-- HEADER -->
+      <div class="header">
+        <div class="skull-icon">☠️</div>
+        <h1>Reactor Armene</h1>
+        <h2>Pirate Galaxy — Registro de Olas</h2>
+        <p>Sistema de seguimiento · 20 Olas · Dificultad por línea</p>
+      </div>
+
+      <!-- PLAYER CARD -->
+      <div class="player-card">
+        <div class="player-stat">
+          <span class="player-stat-label">Servidor</span>
+          <span class="player-stat-value">Aurora</span>
+        </div>
+        <span class="stat-sep">·</span>
+        <div class="player-stat">
+          <span class="player-stat-label">Autor</span>
+          <span class="player-stat-value cyan">Mi Vida</span>
+        </div>
+        <span class="stat-sep">·</span>
+        <div class="player-stat">
+          <span class="player-stat-label">Nivel</span>
+          <span class="player-stat-value">99</span>
+        </div>
+        <span class="stat-sep">·</span>
+        <div class="player-stat">
+          <span class="player-stat-label">Flota</span>
+          <span class="player-stat-value verde">El Holandes Errante</span>
+        </div>
+      </div>
+
+      <!-- FECHA DEL REACTOR -->
+      <div class="date-section">
+        <span class="date-label">📅 Fecha del Reactor</span>
+        <div class="date-selects">
+          <div class="date-field">
+            <span class="date-field-label">Mes</span>
+            <select id="dateMes" onchange="onDateChange()">
+              <option value="">— Mes —</option>
+              <option>Enero</option>
+              <option>Febrero</option>
+              <option>Marzo</option>
+              <option>Abril</option>
+              <option>Mayo</option>
+              <option>Junio</option>
+              <option>Julio</option>
+              <option>Agosto</option>
+              <option>Septiembre</option>
+              <option>Octubre</option>
+              <option>Noviembre</option>
+              <option>Diciembre</option>
+            </select>
+          </div>
+          <span class="date-sep">/</span>
+          <div class="date-field">
+            <span class="date-field-label">Semana</span>
+            <select id="dateSemana" onchange="onDateChange()">
+              <option value="">— Semana —</option>
+              <option value="Semana 1-2">Semana 1-2</option>
+              <option value="Semana 3-4">Semana 3-4</option>
+            </select>
+          </div>
+          <span class="date-sep">/</span>
+          <div class="date-field">
+            <span class="date-field-label">Año</span>
+            <select id="dateAnio" onchange="onDateChange()">
+              <option value="">— Año —</option>
+            </select>
+          </div>
+        </div>
+        <div class="date-display" id="dateDisplay">Sin fecha registrada</div>
+      </div>
+
+      <!-- LEGEND -->
+      <div class="legend">
+        <div class="legend-item">
+          <span class="legend-dot dot-verde"></span>VERDE
+        </div>
+        <div class="legend-item">
+          <span class="legend-dot dot-naranja"></span>NARANJA
+        </div>
+        <div class="legend-item">
+          <span class="legend-dot dot-morada"></span>MORADA
+        </div>
+        <div class="legend-item" style="color: var(--text-dim)">
+          ☆ — Sin datos
+        </div>
+      </div>
+
+      <!-- BUTTONS -->
+      <div class="btn-bar">
+        <button class="btn" onclick="exportCSV()">⬇ Exportar CSV</button>
+        <button class="btn btn-danger" onclick="resetAll()">
+          ↺ Limpiar todo
+        </button>
+      </div>
+
+      <!-- TABLE -->
+      <div class="table-wrapper">
+        <table id="reactorTable">
+          <thead>
+            <tr>
+              <th
+                colspan="8"
+                class="th-section"
+                style="text-align: right; padding-right: 12px"
+              >
+                Dificultad por línea &amp; necesidad de pilotos ▸
+              </th>
+              <th colspan="2" class="col-verde">VERDE</th>
+              <th colspan="2" class="col-naranja">NARANJA</th>
+              <th colspan="2" class="col-morada">MORADA</th>
+            </tr>
+            <tr>
+              <th class="col-ola">OLA</th>
+              <th class="pair1">JEFE X1</th>
+              <th class="pair2">JEFE X2</th>
+              <th class="pair3">JEFE X3</th>
+              <th class="pair1">UBICACIÓN X1</th>
+              <th class="pair2">UBICACIÓN X2</th>
+              <th class="pair3">UBICACIÓN X3</th>
+              <th>RANGO DE BICHOS</th>
+              <th class="col-verde">Nº</th>
+              <th class="col-verde">DIF.</th>
+              <th class="col-naranja">Nº</th>
+              <th class="col-naranja">DIF.</th>
+              <th class="col-morada">Nº</th>
+              <th class="col-morada">DIF.</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody">
+            <!-- rows generated by JS -->
+          </tbody>
+        </table>
+      </div>
+
+      <div class="footer">
+        Reactor <span>Armene</span> · Pirate Galaxy · Registro activo
+      </div>
+
+      <div id="saveIndicator">✦ Guardado automático</div>
+    </div>
+
+    <script>
+      // ── DATA OPTIONS ──
+      const JEFES = ["", "N/A", "Recolectora", "Centinela", "Dispersor"];
+
+      const UBICACIONES = [
+        "",
+        "N/A",
+        "A1 (VERDE)",
+        "A2 (VERDE)",
+        "A3 (VERDE)",
+        "B1 (VERDE)",
+        "B2 (VERDE)",
+        "B3 (VERDE)",
+        "A1 (NARANJA)",
+        "A2 (NARANJA)",
+        "A3 (NARANJA)",
+        "B1 (NARANJA)",
+        "B2 (NARANJA)",
+        "B3 (NARANJA)",
+        "A1 (MORADA)",
+        "A2 (MORADA)",
+        "A3 (MORADA)",
+        "B1 (MORADA)",
+        "B2 (MORADA)",
+        "B3 (MORADA)",
+      ];
+
+      const DIFICULTAD = ["", "FÁCIL", "MEDIO", "DIFÍCIL", "MUY DIFÍCIL"];
+      const NUMERO = ["", "1", "2", "3", "4", "5"];
+
+      // ── BUILD ROWS ──
+      function buildSelect(options, cls = "", id = "") {
+        let s = `<select ${
+          id ? `id="${id}"` : ""
+        } class="${cls}" onchange="onSelectChange(this)">`;
+        for (const o of options) {
+          s += `<option value="${o}">${o === "" ? "—" : o}</option>`;
+        }
+        s += "</select>";
+        return s;
+      }
+
+      function colorUbicacion(sel) {
+        const v = sel.value;
+        sel.style.color = "";
+        sel.style.borderColor = "";
+        if (v.includes("VERDE")) {
+          sel.style.color = "var(--verde)";
+          sel.style.borderColor = "var(--verde)";
+        }
+        if (v.includes("NARANJA")) {
+          sel.style.color = "var(--naranja)";
+          sel.style.borderColor = "var(--naranja)";
+        }
+        if (v.includes("MORADA")) {
+          sel.style.color = "var(--morada)";
+          sel.style.borderColor = "var(--morada)";
+        }
+        if (v === "N/A") {
+          sel.style.color = "var(--text-dim)";
+        }
+      }
+
+      function onSelectChange(sel) {
+        if (sel.classList.contains("dif-verde")) styleDiffSel(sel, "verde");
+        if (sel.classList.contains("dif-naranja")) styleDiffSel(sel, "naranja");
+        if (sel.classList.contains("dif-morada")) styleDiffSel(sel, "morada");
+        if (sel.classList.contains("num-verde")) styleNumSel(sel, "verde");
+        if (sel.classList.contains("num-naranja")) styleNumSel(sel, "naranja");
+        if (sel.classList.contains("num-morada")) styleNumSel(sel, "morada");
+        if (sel.dataset.type === "ubi") colorUbicacion(sel);
+      }
+
+      function styleDiffSel(sel, color) {
+        const map = {
+          verde: "var(--verde)",
+          naranja: "var(--naranja)",
+          morada: "var(--morada)",
+        };
+        sel.style.color = sel.value ? map[color] : "";
+      }
+
+      function styleNumSel(sel, color) {
+        const map = {
+          verde: "var(--verde)",
+          naranja: "var(--naranja)",
+          morada: "var(--morada)",
+        };
+        sel.style.color = sel.value ? map[color] : "";
+        sel.style.fontFamily = sel.value ? "'Orbitron', monospace" : "";
+        sel.style.fontWeight = sel.value ? "700" : "";
+      }
+
+      function colorJefe(sel) {
+        sel.classList.remove(
+          "jefe-recolectora",
+          "jefe-centinela",
+          "jefe-dispersor",
+          "jefe-na"
+        );
+        const v = sel.value;
+        if (v === "Recolectora") sel.classList.add("jefe-recolectora");
+        else if (v === "Centinela") sel.classList.add("jefe-centinela");
+        else if (v === "Dispersor") sel.classList.add("jefe-dispersor");
+        else if (v === "N/A") sel.classList.add("jefe-na");
+      }
+
+      function buildRow(ola) {
+        const tr = document.createElement("tr");
+        tr.dataset.ola = ola;
+
+        // OLA
+        const tdOla = document.createElement("td");
+        tdOla.className = "td-ola";
+        tdOla.textContent = ola;
+        tr.appendChild(tdOla);
+
+        // Helper: jefe select
+        function makeJefeTd(pairCls) {
+          const td = document.createElement("td");
+          td.className = pairCls;
+          const sel = document.createElement("select");
+          sel.className = "sel-jefe";
+          JEFES.forEach((o) =>
+            sel.appendChild(new Option(o === "" ? "— vacío —" : o, o))
+          );
+          sel.addEventListener("change", () => colorJefe(sel));
+          td.appendChild(sel);
+          return td;
+        }
+
+        // Helper: ubicacion select
+        function makeUbiTd(pairCls) {
+          const td = document.createElement("td");
+          td.className = pairCls;
+          const sel = document.createElement("select");
+          sel.className = "sel-ubi";
+          sel.dataset.type = "ubi";
+          UBICACIONES.forEach((o) =>
+            sel.appendChild(new Option(o === "" ? "— vacío —" : o, o))
+          );
+          sel.addEventListener("change", () => colorUbicacion(sel));
+          td.appendChild(sel);
+          return td;
+        }
+
+        // Helper: número select (1-5)
+        function makeNumTd(colorCls) {
+          const td = document.createElement("td");
+          td.className = "diff-cell diff-cell-sm";
+          const sel = document.createElement("select");
+          sel.className = colorCls;
+          NUMERO.forEach((o) =>
+            sel.appendChild(new Option(o === "" ? "—" : o, o))
+          );
+          sel.addEventListener("change", () =>
+            styleNumSel(sel, colorCls.replace("num-", ""))
+          );
+          td.appendChild(sel);
+          return td;
+        }
+
+        // Helper: dificultad select
+        function makeDifTd(colorCls) {
+          const td = document.createElement("td");
+          td.className = "diff-cell";
+          const sel = document.createElement("select");
+          sel.className = colorCls;
+          DIFICULTAD.forEach((o) =>
+            sel.appendChild(new Option(o === "" ? "—" : o, o))
+          );
+          sel.addEventListener("change", () =>
+            styleDiffSel(sel, colorCls.replace("dif-", ""))
+          );
+          td.appendChild(sel);
+          return td;
+        }
+
+        tr.appendChild(makeJefeTd("pair1")); // Jefe X1
+        tr.appendChild(makeJefeTd("pair2")); // Jefe X2
+        tr.appendChild(makeJefeTd("pair3")); // Jefe X3
+        tr.appendChild(makeUbiTd("pair1")); // Ubi X1
+        tr.appendChild(makeUbiTd("pair2")); // Ubi X2
+        tr.appendChild(makeUbiTd("pair3")); // Ubi X3
+
+        // Rango de bichos
+        const tdR = document.createElement("td");
+        tdR.className = "td-rango";
+        const inp = document.createElement("input");
+        inp.type = "text";
+        inp.placeholder = "ej: 21 · 56; 24";
+        tdR.appendChild(inp);
+        tr.appendChild(tdR);
+
+        tr.appendChild(makeNumTd("num-verde")); // Verde Nº
+        tr.appendChild(makeDifTd("dif-verde")); // Verde DIF
+        tr.appendChild(makeNumTd("num-naranja")); // Naranja Nº
+        tr.appendChild(makeDifTd("dif-naranja")); // Naranja DIF
+        tr.appendChild(makeNumTd("num-morada")); // Morada Nº
+        tr.appendChild(makeDifTd("dif-morada")); // Morada DIF
+
+        return tr;
+      }
+
+      const STORAGE_KEY = "armene_reactor_data";
+      const STORAGE_DATE_KEY = "armene_reactor_fecha";
+
+      // ── POBLAR AÑOS ──
+      function buildYears() {
+        const sel = document.getElementById("dateAnio");
+        for (let y = 2026; y <= 2060; y++) {
+          sel.appendChild(new Option(y, y));
+        }
+      }
+
+      // ── FECHA: cambio ──
+      function onDateChange() {
+        saveFecha();
+        updateDateDisplay();
+      }
+
+      function updateDateDisplay() {
+        const mes = document.getElementById("dateMes").value;
+        const semana = document.getElementById("dateSemana").value;
+        const anio = document.getElementById("dateAnio").value;
+        const el = document.getElementById("dateDisplay");
+        if (mes || semana || anio) {
+          el.textContent = [mes, semana, anio].filter(Boolean).join(" · ");
+          el.style.color = "var(--accent-gold)";
+        } else {
+          el.textContent = "Sin fecha registrada";
+          el.style.color = "var(--text-dim)";
+        }
+      }
+
+      function saveFecha() {
+        const fecha = {
+          mes: document.getElementById("dateMes").value,
+          semana: document.getElementById("dateSemana").value,
+          anio: document.getElementById("dateAnio").value,
+        };
+        localStorage.setItem(STORAGE_DATE_KEY, JSON.stringify(fecha));
+        showSaveIndicator();
+      }
+
+      function loadFecha() {
+        const raw = localStorage.getItem(STORAGE_DATE_KEY);
+        if (!raw) return;
+        let f;
+        try {
+          f = JSON.parse(raw);
+        } catch {
+          return;
+        }
+        if (f.mes) document.getElementById("dateMes").value = f.mes;
+        if (f.semana) document.getElementById("dateSemana").value = f.semana;
+        if (f.anio) document.getElementById("dateAnio").value = f.anio;
+        updateDateDisplay();
+      }
+
+      // ── GUARDAR ──
+      function saveData() {
+        const data = [];
+        document.querySelectorAll("#tableBody tr").forEach((tr) => {
+          const sels = tr.querySelectorAll("select");
+          const inp = tr.querySelector('input[type="text"]');
+          data.push({
+            ola: tr.dataset.ola,
+            j1: sels[0]?.value || "",
+            j2: sels[1]?.value || "",
+            j3: sels[2]?.value || "",
+            u1: sels[3]?.value || "",
+            u2: sels[4]?.value || "",
+            u3: sels[5]?.value || "",
+            rango: inp?.value || "",
+            vn: sels[6]?.value || "",
+            vd: sels[7]?.value || "",
+            nn: sels[8]?.value || "",
+            nd: sels[9]?.value || "",
+            mn: sels[10]?.value || "",
+            md: sels[11]?.value || "",
+          });
+        });
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+        showSaveIndicator();
+      }
+
+      // ── INDICADOR VISUAL DE GUARDADO ──
+      function showSaveIndicator() {
+        const el = document.getElementById("saveIndicator");
+        if (!el) return;
+        el.classList.add("visible");
+        clearTimeout(el._timer);
+        el._timer = setTimeout(() => el.classList.remove("visible"), 1800);
+      }
+
+      // ── CARGAR ──
+      function loadData() {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return;
+        let data;
+        try {
+          data = JSON.parse(raw);
+        } catch {
+          return;
+        }
+
+        data.forEach((row, idx) => {
+          const tr = document.querySelectorAll("#tableBody tr")[idx];
+          if (!tr) return;
+          const sels = tr.querySelectorAll("select");
+          const inp = tr.querySelector('input[type="text"]');
+
+          const setVal = (sel, val) => {
+            if (sel) {
+              sel.value = val;
+            }
+          };
+
+          setVal(sels[0], row.j1);
+          colorJefe(sels[0]);
+          setVal(sels[1], row.j2);
+          colorJefe(sels[1]);
+          setVal(sels[2], row.j3);
+          colorJefe(sels[2]);
+          setVal(sels[3], row.u1);
+          colorUbicacion(sels[3]);
+          setVal(sels[4], row.u2);
+          colorUbicacion(sels[4]);
+          setVal(sels[5], row.u3);
+          colorUbicacion(sels[5]);
+          if (inp) inp.value = row.rango || "";
+          setVal(sels[6], row.vn);
+          styleNumSel(sels[6], "verde");
+          setVal(sels[7], row.vd);
+          styleDiffSel(sels[7], "verde");
+          setVal(sels[8], row.nn);
+          styleNumSel(sels[8], "naranja");
+          setVal(sels[9], row.nd);
+          styleDiffSel(sels[9], "naranja");
+          setVal(sels[10], row.mn);
+          styleNumSel(sels[10], "morada");
+          setVal(sels[11], row.md);
+          styleDiffSel(sels[11], "morada");
+        });
+      }
+
+      // ── INIT ──
+      function init() {
+        buildYears();
+        const tbody = document.getElementById("tableBody");
+        for (let i = 1; i <= 20; i++) {
+          tbody.appendChild(buildRow(i));
+        }
+        loadData();
+        loadFecha();
+        // Auto-guardar en cada cambio
+        tbody.addEventListener("change", saveData);
+        tbody.addEventListener("input", saveData);
+      }
+
+      function resetAll() {
+        if (
+          !confirm(
+            "¿Limpiar todos los datos de la tabla? Esto también borrará la fecha y el guardado."
+          )
+        )
+          return;
+        document
+          .querySelectorAll("select")
+          .forEach((s) => (s.selectedIndex = 0));
+        document
+          .querySelectorAll('input[type="text"]')
+          .forEach((i) => (i.value = ""));
+        document.querySelectorAll(".sel-ubi").forEach((s) => {
+          s.style.color = "";
+          s.style.borderColor = "";
+        });
+        document.querySelectorAll(".sel-jefe").forEach((s) => {
+          s.classList.remove(
+            "jefe-recolectora",
+            "jefe-centinela",
+            "jefe-dispersor",
+            "jefe-na"
+          );
+        });
+        document
+          .querySelectorAll(
+            ".dif-verde,.dif-naranja,.dif-morada,.num-verde,.num-naranja,.num-morada"
+          )
+          .forEach((s) => {
+            s.style.color = "";
+            s.style.fontFamily = "";
+            s.style.fontWeight = "";
+          });
+        localStorage.removeItem(STORAGE_KEY);
+        localStorage.removeItem(STORAGE_DATE_KEY);
+        updateDateDisplay();
+      }
+
+      function exportCSV() {
+        const rows = [
+          [
+            "OLA",
+            "JEFE X1",
+            "JEFE X2",
+            "JEFE X3",
+            "UBICACIÓN X1",
+            "UBICACIÓN X2",
+            "UBICACIÓN X3",
+            "RANGO BICHOS",
+            "VERDE Nº",
+            "VERDE DIF",
+            "NARANJA Nº",
+            "NARANJA DIF",
+            "MORADA Nº",
+            "MORADA DIF",
+          ],
+        ];
+        document.querySelectorAll("#tableBody tr").forEach((tr) => {
+          const ola = tr.dataset.ola;
+          const sels = tr.querySelectorAll("select");
+          const inp = tr.querySelector('input[type="text"]');
+          rows.push([
+            ola,
+            sels[0]?.value || "", // Jefe X1
+            sels[1]?.value || "", // Jefe X2
+            sels[2]?.value || "", // Jefe X3
+            sels[3]?.value || "", // Ubi X1
+            sels[4]?.value || "", // Ubi X2
+            sels[5]?.value || "", // Ubi X3
+            inp?.value || "", // Rango
+            sels[6]?.value || "", // Verde Nº
+            sels[7]?.value || "", // Verde Dif
+            sels[8]?.value || "", // Naranja Nº
+            sels[9]?.value || "", // Naranja Dif
+            sels[10]?.value || "", // Morada Nº
+            sels[11]?.value || "", // Morada Dif
+          ]);
+        });
+        const csv = rows
+          .map((r) => r.map((c) => `"${c}"`).join(","))
+          .join("\n");
+        const a = document.createElement("a");
+        a.href = "data:text/csv;charset=utf-8," + encodeURIComponent(csv);
+        a.download = "armene_reactor.csv";
+        a.click();
+      }
+
+      init();
+    </script>
+  </body>
+</html>
